@@ -1,0 +1,47 @@
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+xcode-select --install
+brew
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+sudo xcodebuild -license
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+ping 1.1.1.1
+brew
+ls .zsh*
+mkdir .zshrc.d
+touch .zshrc.d/00-prompt.zsh
+cat .zshrcold
+nano .zshrc.d/00-prompt.zsh
+ls
+ls -l
+ls -al
+git
+brew install git
+brew install nano
+nano .zshrc.d/01-alias.zsh
+reload
+reload
+which reload
+nano .zshrc.d/01-alias.zsh
+nano .zshrc.d/01-alias.zsh
+ls .zsh*.d
+brew doctor
+cat .zshrc
+cat .zshrc.d/00-prompt.zsh
+cat .zshrc.d/01-alias.zsh
+nano .zshenv
+nano .zshrc
+nano .zshenv.d/00-brew.zsh
+echo $PATH
+ls
+cd desarrollo
+mkdir dotfiles
+echo "# dotfiles" >> README.md\
+git init\
+git add README.md\
+git commit -m "first commit"\
+git branch -M main\
+git remote add origin git@github.com:manu-romero-411/dotfiles.git\
+git push -u origin main
+git config --global --edit
+nano ~/.zshenv
+echo $EDITOR

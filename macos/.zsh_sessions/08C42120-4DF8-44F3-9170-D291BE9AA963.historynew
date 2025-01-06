@@ -1,0 +1,3 @@
+brew doctor
+nano .zshrc.d/01-alias.zsh
+nano .zshenv.d/00-brew.zsh

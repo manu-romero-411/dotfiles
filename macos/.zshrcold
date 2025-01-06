@@ -1,0 +1,21 @@
+#!/bin/zsh
+
+# ANDROID STUDIO
+export PATH="$HOME/Library/Android/sdk/cmdline-tools/latest/bin:$PATH"
+
+# FLUTTER
+export PATH="$HOME/.devtools/flutter/bin:$PATH"
+
+# RBENV (GESTOR DE VERSIONES DE RUBY, PARA INSTALAR COCOAPODS Y DEMÁS)
+export PATH="$HOME/.rbenv/bin:$PATH"
+eval "$(rbenv init -)"
+
+# PYTHON DE HOMEBREW # https://apple.stackexchange.com/questions/450303/how-to-make-python-3-11-my-default-python3-with-brew
+# ensure "python3" command uses homebrew's version of python3
+alias python3=/opt/homebrew/bin/python3
+# OPTIONAL: ensure "python" command uses homebrew's version of python3
+alias python=/opt/homebrew/bin/python3
+# pip
+alias pip="/opt/homebrew/bin/python3 -m pip"
+
+PROMPT='%F{111}%n@%F{111}%m: %F{2}%~ %F{6}%#%f '

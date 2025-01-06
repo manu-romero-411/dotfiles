@@ -1,0 +1,10 @@
+echo $PATH
+nano .zshenv.d/README.md
+cp .zshenv .zshrc
+nano .zshrc
+echo $PATH | grep home
+eval $(/opt/homebrew/bin/brew shellenv)
+opt/homebrew/bin/brew shellenv
+/opt/homebrew/bin/brew shellenv
+brew
+which brew

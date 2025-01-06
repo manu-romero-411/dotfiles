@@ -1,0 +1,5 @@
+echo $EDITOR
+nano .zshrc
+which nano
+which git
+cat .zshenv.d/00-brew.zsh
