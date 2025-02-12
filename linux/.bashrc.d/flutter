@@ -1,0 +1,4 @@
+#!/bin/bash
+
+FLUTTER_HOME="$HOME/desarrollo/.lib/flutter"
+PATH="$FLUTTER_HOME/bin:$PATH"

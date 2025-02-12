@@ -1,0 +1,23 @@
+#!/bin/bash
+
+# Definición de colores y efectos
+COLOR_USER="\[\e[96;1m\]"
+COLOR_AT="\[\e[0;35m\]"
+COLOR_HOST="\[\e[92;1m\]"
+COLOR_RESET="\[\e[0m\]"
+COLOR_DIR="\[\e[95m\]"
+COLOR_BRANCH="\[\e[96m\]"
+COLOR_CMD="\[\e[92;1m\]"
+
+# Comandos para obtener información del repositorio git
+PROMPT_COMMAND='PS1_CMD1=$(git branch --show-current 2>/dev/null)'
+
+# Función para mostrar la rama de Git con paréntesis solo si estamos en un repo
+function git_branch_prompt {
+  if [ -n "$PS1_CMD1" ]; then
+    echo "(${PS1_CMD1})"
+  fi
+}
+
+# Definición del prompt
+PS1="${COLOR_USER}\u${COLOR_AT}@${COLOR_HOST}\h${COLOR_RESET} ${COLOR_BRANCH}%${COLOR_RESET} ${COLOR_DIR}\w${COLOR_RESET} ${COLOR_BRANCH}\$(git_branch_prompt)${COLOR_CMD}>${COLOR_RESET} "

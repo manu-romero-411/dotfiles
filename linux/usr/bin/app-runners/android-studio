@@ -1,0 +1,6 @@
+#!/bin/bash
+
+cd /opt/android-studio/bin
+/opt/android-studio/bin/studio.sh "$@"
+
+exit $?

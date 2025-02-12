@@ -1,0 +1,6 @@
+#!/bin/bash
+
+DIR=/pcgrande/Aplicaciones/mcaselector
+cd "$DIR/bin"
+"$DIR/bin/java" -jar "$DIR/mcaselector-2.4.2.jar" "$@"
+exit $?
