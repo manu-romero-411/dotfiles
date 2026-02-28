@@ -1,0 +1,5 @@
+Defaults        insults
+Defaults        pwfeedback
+
+manuel ALL = (root) NOPASSWD: /usr/sbin/grub-reboot
+

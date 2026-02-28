@@ -1,0 +1,80 @@
+#!/bin/bash
+
+TX_BOLD="\e[1m"
+TX_RESET="\e[0m"
+TX_RED="\e[31m"
+TX_ERROR="${TX_BOLD}${TX_RED}"
+
+function echo_error(){
+    echo -e "${TX_ERROR}[x]${TX_RESET} ${TX_ERROR}${@}${TX_RESET}" >&2
+}
+
+function echo_info(){
+    echo -e "${TX_BOLD}${@}${TX_RESET}"
+}
+
+# --- Gestión de argumentos ---
+if [ $# -lt 3 ]; then
+    echo_info "Uso: $0 ORIG_EXT DEST_EXT archivo1 [archivo2 ...]"
+    exit 1
+fi
+
+ORIG_EXT="$1"
+DEST_EXT="$2"
+shift 2   # Ahora $@ contiene solo los archivos
+
+# --- Validación de combinaciones permitidas ---
+case "${ORIG_EXT}:${DEST_EXT}" in
+    chd:cue|chd:gdi|chd:iso)
+		CHDMAN_OP=extractcd
+		;;
+	cue:chd|gdi:chd|iso:chd)
+		CHDMAN_OP=createcd
+        ;;  # válido
+    *)
+        echo_error "Combinación no permitida: ${ORIG_EXT} → ${DEST_EXT}"
+        echo_info "Combinaciones válidas:"
+        echo_info "  chd → cue | gdi | iso"
+        echo_info "  cue → chd"
+        echo_info "  gdi → chd"
+        echo_info "  iso → chd"
+        exit 1
+        ;;
+esac
+
+if [ $# -eq 0 ]; then
+    echo_error "Debes especificar al menos un archivo."
+    exit 1
+fi
+
+# --- Validación de archivos ---
+LIST=()
+
+for f in "$@"; do
+    if [ ! -f "$f" ]; then
+        echo_error "El archivo '$f' no existe."
+        exit 1
+    fi
+
+    filename=$(basename -- "$f")
+    extension="${filename##*.}"
+
+    if [[ "$extension" != "$ORIG_EXT" ]]; then
+        echo_error "El archivo '$filename' no tiene extensión .$ORIG_EXT."
+        exit 1
+    fi
+
+    LIST+=("$f")
+done
+
+# --- Procesamiento ---
+if ! which chdman; then
+    sudo apt-get -y install mame-tools --no-install-recommends || exit 1
+fi
+
+for f in "${LIST[@]}"; do
+    name="${f%.*}"
+    chdman ${CHDMAN_OP} -i "$name.$ORIG_EXT" -o "$name.$DEST_EXT" --force || exit 1
+done
+
+exit 0

@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if [ -f /tmp/.is-gaming-media-ui-running ]; then
+        exit 0
+fi
+
+HDMI="HDMI-A-1"
+
+RES=""
+case $1 in
+    "fhd"|"1080p") RES=1920x1080@60;;
+    "hd"|"720p") RES=1280x720@60;;
+    "mac"|"900p") RES=1440x900@60;;
+    *) echo "Valores válidos: fhd | hd | mac"; exit 1;;
+esac
+
+# Detectar si HDMI está conectado
+if kscreen-doctor -o | grep -q "Output: .* ${HDMI}" && \
+   kscreen-doctor -o | grep -A3 "${HDMI}" | grep -q "connected"; then
+    echo "[INFO] ${HDMI} detectado y conectado. Activando sólo esta pantalla..."
+
+    # Activar HDMI con su modo preferido
+    kscreen-doctor output.${HDMI}.enable
+    kscreen-doctor output.${HDMI}.mode.1
+
+    # Desactivar todas las demás salidas conectadas
+    for OUT in $(kscreen-doctor -o | grep "Output:" | awk '{print $3}'); do
+        if [[ "$OUT" != "$HDMI" ]]; then
+            echo "[INFO] Desactivando ${OUT}"
+            kscreen-doctor output.${OUT}.disable
+            kscreen-doctor output.${HDMI}.mode.${RES}
+        fi
+    done
+else
+    echo "[WARN] ${HDMI} no está conectado. No se realizan cambios."
+fi

@@ -1,0 +1,12 @@
+#!/bin/bash
+
+GDRIVE_SYNC=/penguin/documentos/_importantes/
+
+rclone -v -v bisync "${GDRIVE_SYNC}" google-drive:Documentos/Importantes --resync --drive-import-formats docx,xlsx,pptx \
+--exclude "/manuVault/**" \
+--exclude "/desktop.ini" \
+--exclude "/Thumbs.db" \
+--exclude "/.hidden" \
+--exclude "/_otros/**"
+
+exit $?

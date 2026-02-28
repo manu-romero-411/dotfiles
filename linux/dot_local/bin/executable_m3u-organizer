@@ -1,0 +1,88 @@
+#!/bin/bash
+
+set -e
+
+# Comprobar si se ha pasado un argumento
+if [ -z "$1" ]; then
+    echo "Uso: $0 lista.m3u [-u]"
+    exit 1
+fi
+
+M3U_FILE="$1"
+
+# Verificar que el archivo existe
+if [ ! -f "$M3U_FILE" ] && [ ! -d "$M3U_FILE" ]; then
+    echo "Error: El archivo '$M3U_FILE' no existe."
+    exit 1
+fi
+
+if [ -d "${M3U_FILE}" ] && [ $# -lt 2 ]; then
+	echo "[ERROR] Este m3u ya está carpetizado. ¿Quizás quieras adosar el argumento -u para descarpetizarlo?"
+	exit 1
+fi
+
+if [[ $# -gt 2 ]]; then
+	echo "[ERROR] Argumento inválido"
+        echo "Uso: $0 lista.m3u [-u]"
+	exit 1
+fi
+
+# Nombre de la carpeta de destino
+DIR_NAME="${M3U_FILE%.*}"
+TARGET_DIR="${DIR_NAME}.m3u"
+
+if [[ "$2" == "-u" ]]; then
+	if [ -d "$M3U_FILE" ]; then
+		mv -v "${M3U_FILE}/" "${DIR_NAME}"
+		mv -v "${DIR_NAME}"/* "${DIR_NAME}"/..
+		rm -r "${DIR_NAME}"
+		exit 0
+	else
+		echo "[ERROR] Directorio no existe."
+		exit 1
+	fi
+fi
+
+echo "Creando carpeta: $TARGET_DIR"
+mkdir -p "$DIR_NAME"
+
+# Leer el archivo M3U
+while IFS= read -r line || [ -n "$line" ]; do
+    # Limpiar retornos de carro (dos2unix manual)
+    file_raw=$(echo "$line" | tr -d '\r')
+
+    # Saltar líneas vacías
+    [ -z "$file_raw" ] && continue
+
+    # Saltar comentarios (líneas que empiezan por #)
+    case "$file_raw" in
+        #*) continue ;;
+    esac
+
+    # Obtener el nombre base sin extensión
+    filename_no_ext="${file_raw%.*}"
+
+    found=false
+    # Usamos un glob expandido. El nullglob evita errores si no hay matches
+    for match in "$filename_no_ext".*; do
+        if [ -f "$match" ]; then
+            # Evitar copiar el propio directorio de destino o el script
+            if [ "$match" != "$DIR_NAME" ]; then
+                mv -v "$match" "$DIR_NAME/"
+                found=true
+            fi
+        fi
+    done
+
+    if [ "$found" = false ]; then
+        echo "[WARN] No se encontró nada para '$filename_no_ext'"
+    fi
+
+done < "$M3U_FILE"
+
+# Mover el archivo m3u original a la carpeta al final
+echo "Moviendo $M3U_FILE a la carpeta..."
+mv "$M3U_FILE" "$DIR_NAME"
+mv "$DIR_NAME" "$TARGET_DIR"
+
+echo "[INFO] Proceso terminado"

@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if [ -f /tmp/.is-gaming-media-ui-running ] && [[ $1 != "-f" ]]; then
+	exit 0
+fi
+
+echo "[INFO] Restaurando pantallas conectadas..."
+
+# Detectar salidas conectadas
+CONNECTED=$(kscreen-doctor -o | awk '/Output:/ {out=$3} /connected/ {print out}')
+
+# Activar cada salida con su modo preferido
+for OUT in $CONNECTED; do
+    echo "[INFO] Activando ${OUT}"
+    kscreen-doctor output.${OUT}.enable
+    kscreen-doctor output.${OUT}.mode.1
+done
+
+# Si existen eDP-1 y HDMI-A-1, colocarlas en disposición clásica
+if echo "$CONNECTED" | grep -q "eDP-1" && echo "$CONNECTED" | grep -q "HDMI-A-1"; then
+    echo "[INFO] Colocando eDP-1 a la izquierda y HDMI-A-1 a la derecha"
+    kscreen-doctor output.eDP-1.position.0,0
+    kscreen-doctor output.HDMI-A-1.position.1920,0
+fi

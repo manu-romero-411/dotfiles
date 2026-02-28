@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+cat /proc/driver/nvidia/params | sort
+exit $?

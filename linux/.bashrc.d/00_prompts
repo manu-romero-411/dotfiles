@@ -21,3 +21,5 @@ function git_branch_prompt {
 
 # Definición del prompt
 PS1="${COLOR_USER}\u${COLOR_AT}@${COLOR_HOST}\h${COLOR_RESET} ${COLOR_BRANCH}%${COLOR_RESET} ${COLOR_DIR}\w${COLOR_RESET} ${COLOR_BRANCH}\$(git_branch_prompt)${COLOR_CMD}>${COLOR_RESET} "
+
+export VIRTUAL_ENV_DISABLE_PROMPT=1

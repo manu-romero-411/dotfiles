@@ -1,0 +1,45 @@
+#!/bin/bash
+## PARSEAR ROMS FAVORITAS DEL gamelist.xml DE LA CARPETA DADA
+## FECHA: 18 de enero de 2024
+
+function ayuda(){
+	echo "USO: $0 /ruta/a/carpeta/de/roms [--extract-paths|-p] [--extract-names|-n] [--copy-to-dir|-c /ruta/donde/guardar/miniromset]"
+	echo "* No es posible usar -p, -n y -c a la vez. Se recomienda usar -c para empaquetar directamente miniromsets con una selección de juegos sin broza."
+	exit 1
+}
+
+if [ $# -lt 1 ] || [ $# -gt 3 ]; then
+	echo "[ERROR] Faltan argumentos"
+	ayuda
+	exit 1
+fi
+
+if [[ ! -d "$1" ]]; then
+	echo "[ERROR] Carpeta no encontrada"
+	ayuda
+	exit 1
+fi
+
+if [ ! -f "$1/gamelist.xml" ]; then
+	echo "[ERROR] No es un directorio de roms de Batocera válido."
+	exit 1
+fi
+
+if [[ "$2" == "--extract-paths" ]] || [[ "$2" == "-p" ]]; then
+	xmllint --xpath '/gameList/game[favorite="true"]/path/text()' "$1/gamelist.xml" | cut -d"/" -f2 | awk '{ print "\""$0"\""}' | sed "s#\&amp;#\&#g" | xargs -I % ls "$1"/%
+elif [[ "$2" == "--copy-to-dir" ]] || [[ "$2" == "-c" ]]; then
+	if [ -z "$3" ]; then
+		echo "[ERROR] Carpeta output no especificada"
+		ayuda
+		exit 1
+	fi
+	if [ ! -d "$3" ]; then
+		mkdir -p "$3" || exit 1
+	fi
+	xmllint --xpath '/gameList/game[favorite="true"]/path/text()' "$1/gamelist.xml" | cut -d"/" -f2 | awk '{ print "\""$0"\""}' | sed "s#\&amp;#\&#g" | xargs -I % cp "$1"/% "$3"
+elif [[ "$2" == "--extract-names" ]] || [[ "$2" == "-n" ]]; then
+	xmllint --xpath '/gameList/game[favorite="true"]/name/text()' "$1/gamelist.xml" | cut -d"/" -f2 | awk '{ print "\""$0"\""}'
+else
+	ayuda
+fi
+exit 0

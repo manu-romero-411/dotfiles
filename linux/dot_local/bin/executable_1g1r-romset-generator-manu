@@ -1,0 +1,35 @@
+#!/bin/bash
+
+function help(){
+	echo "uso: $0 <directorio origen roms> <directorio destino romset> <dat de retool>"
+}
+
+if [ -z "$1" ]; then
+	help
+	exit 1
+fi
+if [ ! -z "$4" ]; then
+	help
+	exit 1
+fi
+if [ ! -d "$1" ]; then
+	echo "[ERROR] no existe el directorio origen especificado."
+	exit 1
+fi
+if [ ! -f "$3" ]; then
+	echo "[ERROR] no existe el .dat especificado."
+	exit 1
+fi
+if ! mkdir -p "$2"; then
+	echo "[ERROR] no se puede crear el directorio destino especificado"
+	exit 1
+fi
+
+/home/manuel/.local/bin/1g1r-romset-generator \
+-r SPA,WOR,USA,EUR,JPN \
+-l es,en,fr,it,pt,jp \
+--move \
+-i "$1" -o "$2" \
+-d "$3"
+
+exit $?

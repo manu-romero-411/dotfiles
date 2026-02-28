@@ -1,0 +1,57 @@
+#!/usr/bin/env bash
+
+set -e
+# Nombres de salida física que quieres mapear
+OUT_HDMI="alsa_output.pci-0000_01_00.1.hdmi-stereo"
+OUT_ANALOG="alsa_output.pci-0000_05_00.6.analog-stereo"
+
+# limpiar módulos previos creados por este script (busca por descripción o por nombre)
+for m in $(pactl list short modules | awk '$2 ~ /module-null-sink|module-loopback|module-remap-source/ {print $1}'); do
+	# solo descargamos módulos que proporcionamos antes si coinciden con las sink_names usados
+	pactl unload-module "$m" 2>/dev/null || true
+done
+
+for m in $(pactl list short sinks | awk '$2 ~ /.hidden_virtual_mic_analog|.hidden_virtual_mic_hdmi/ {print $1}'); do
+	pactl unload-module "$m" 2>/dev/null || true
+done
+
+case "$1" in
+	"-d"|"--disable") exit 0;;
+	"") true;;
+	*) exit 1;;
+esac
+
+# crear sinks virtuales
+#pactl load-module module-null-sink sink_name=.hidden_virtual_mic_hdmi sink_properties=device.description=Virtual_Mic_HDMI node.hidden=1 #media.class=Stream/Virtual
+#pactl load-module module-null-sink sink_name=.hidden_virtual_mic_analog sink_properties=device.description=Virtual_Mic_Analog node.hidden=1 #media.class=Stream/Virtual
+
+pactl load-module module-null-sink sink_name=.hidden_virtual_mic_hdmi \
+  sink_properties=device.description="Virtual_Mic_HDMI" device.role=filter \
+  node.nick=Virtual_Mic_HDMI node.hidden=true object.linger=1 \
+  pro-audio=true default=false priority.session=1
+
+pactl load-module module-null-sink sink_name=.hidden_virtual_mic_analog \
+  sink_properties=device.description="Virtual_Mic_Analog" device.role=filter \
+  node.nick=Virtual_Mic_Analog node.hidden=true object.linger=1 \
+  pro-audio=true default=false priority.session=1
+
+
+# detecta monitors actuales (añade .monitor)
+MON_HDMI="${OUT_HDMI}.monitor"
+MON_ANALOG="${OUT_ANALOG}.monitor"
+
+# valida que existan
+if ! pactl list short sources | awk '{print $2}' | grep -q "^${MON_HDMI}$"; then
+	echo "Aviso: no encontrado ${MON_HDMI}, revisa el nombre de la salida HDMI" >&2
+fi
+if ! pactl list short sources | awk '{print $2}' | grep -q "^${MON_ANALOG}$"; then
+	echo "Aviso: no encontrado ${MON_ANALOG}, revisa el nombre de la salida ANALOG" >&2
+fi
+
+# crear loopbacks (monitor -> sink virtual)
+pactl load-module module-loopback source="${MON_HDMI}" sink=.hidden_virtual_mic_hdmi latency_msec=1 || true
+pactl load-module module-loopback source="${MON_ANALOG}" sink=.hidden_virtual_mic_analog latency_msec=1 || true
+
+# remap sources amigables (opcional)
+pactl load-module module-remap-source source_name=virtual_mic_hdmi_input master=.hidden_virtual_mic_hdmi.monitor source_properties=device.description="VirtualMicHDMI" node.nick=Virtual_Mic_HDMI_Input
+pactl load-module module-remap-source source_name=virtual_mic_analog_input master=.hidden_virtual_mic_analog.monitor source_properties=device.description="VirtualMicAnalog" node.nick=Virtual_Mic_Analog_Input

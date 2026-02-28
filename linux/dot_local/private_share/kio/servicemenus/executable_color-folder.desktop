@@ -1,0 +1,282 @@
+[Desktop Entry]
+Type=Service
+MimeType=inode/directory;
+Actions=DefaultColor;_SEPARATOR_;ColorRed;ColorOrange;ColorYellow;ColorGreen;ColorBlue;ColorViolet;ColorMagenta;ColorBrown;ColorCyan;ColorGrey;ColorBlack;_SEPARATOR_;CustomIcon;
+Icon=folder-symbolic
+X-KDE-Priority=TopLevel
+X-KDE-Submenu=Tint
+X-KDE-Submenu[de]=Einfärben
+X-KDE-Submenu[ca]=Color
+X-KDE-Submenu[es]=Color
+X-KDE-Submenu[pt]=Cor
+X-KDE-Submenu[pl]=Koloruj
+X-KDE-Submenu[hu]=Színez
+X-KDE-Submenu[fr]=Colorer
+X-KDE-Submenu[it]=Colore
+X-KDE-Submenu[ru]=Цвет
+X-KDE-Submenu[sk]=Zafarbiť
+X-KDE-Submenu[cs]=Zabarvit
+X-KDE-Submenu[sr]=Боја
+X-KDE-Submenu[sr@latin]=Boja
+X-KDE-Submenu[sr@ijekavian]=Боја
+X-KDE-Submenu[sr@ijekavianlatin]=Boja
+
+[Desktop Action DefaultColor]
+Name=Default color
+Name[de]=Standardfarbe
+Name[ca]=Color per defecte
+Name[es]=Color por defecto
+Name[pt]=Cor padrão
+Name[pl]=Domyślny kolor
+Name[hu]=Alapértelmezett szín
+Name[fr]=Couleur par défaut
+Name[it]=Colore predefinito
+Name[ru]=Цвет по умолчанию
+Name[sk]=Predvolená farba
+Name[cs]=Výchozí barva
+Name[sr]=Подразумевана боја
+Name[sr@latin]=Podrazumevana boja
+Name[sr@ijekavian]=Подразумевана боја
+Name[sr@ijekavianlatin]=Podrazumevana boja
+Icon=folder
+Exec=rm "%f/.directory" && for sname in $( qdbus6 --session "org.kde.dolphin-*" ) ; do isactive=false ; isactive=$( qdbus6 "$sname" "/dolphin/Dolphin_1" "org.qtproject.Qt.QWidget.isActiveWindow" ) ; $isactive && qdbus6 "$sname" "/dolphin/Dolphin_1/actions/view_redisplay"  "org.qtproject.Qt.QAction.trigger" ; done
+
+[Desktop Action CustomIcon]
+Name=Custom icon
+Name[de]=Benutzerdefiniertes Symbol
+Name[ca]=Icona personalitzada
+Name[es]=Icono personalizado
+Name[pt]=Ícone personalizado
+Name[pl]=Niestandardowa ikona
+Name[hu]=Egyedi ikon
+Name[fr]=Icône personnalisée
+Name[it]=Icona personalizzata
+Name[ru]=Пользовательская иконка
+Name[sk]=Vlastná ikona
+Name[cs]=Vlastní ikona
+Name[sr]=Прилагођена икона
+Name[sr@latin]=Prilagođena ikona
+Name[sr@ijekavian]=Прилагођена икона
+Name[sr@ijekavianlatin]=Prilagođena ikona
+Icon=preferences-desktop-icons
+Exec=NEW_ICON=$(kdialog --geticon) && printf "[Desktop Entry]\nIcon=$NEW_ICON" > "%f/.directory" && for sname in $(qdbus6 --session "org.kde.dolphin-*") ; do isactive=false ; isactive=$(qdbus6 "$sname" "/dolphin/Dolphin_1" "org.qtproject.Qt.QWidget.isActiveWindow") ; $isactive && qdbus6 "$sname" "/dolphin/Dolphin_1/actions/view_redisplay" "org.qtproject.Qt.QAction.trigger" ; done
+
+[Desktop Action ColorRed]
+Name=Red
+Name[de]=Rot
+Name[ca]=Vermell
+Name[es]=Rojo
+Name[pt]=Vermelho
+Name[pl]=Czerwony
+Name[hu]=Piros
+Name[fr]=Rouge
+Name[it]=Rosso
+Name[ru]=Красный
+Name[sk]=Červená
+Name[cs]=Červená
+Name[sr]=Црвена
+Name[sr@latin]=Crvena
+Name[sr@ijekavian]=Црвена
+Name[sr@ijekavianlatin]=Crvena
+Icon=folder-red
+Exec=printf "[Desktop Entry]\nIcon=folder-red" > "%f/.directory" && for sname in $( qdbus6 --session "org.kde.dolphin-*" ) ; do isactive=false ; isactive=$( qdbus6 "$sname" "/dolphin/Dolphin_1" "org.qtproject.Qt.QWidget.isActiveWindow" ) ; $isactive && qdbus6 "$sname" "/dolphin/Dolphin_1/actions/view_redisplay"  "org.qtproject.Qt.QAction.trigger" ; done
+
+[Desktop Action ColorOrange]
+Name=Orange
+Name[de]=Orange
+Name[ca]=Taronja
+Name[es]=Naranja
+Name[pt]=Laranja
+Name[pl]=Pomarańczowy
+Name[hu]=Narancsszinű
+Name[fr]=Orange
+Name[it]=Arancione
+Name[ru]=Оранжевый
+Name[sk]=Oranžová
+Name[cs]=Oranžová
+Name[sr]=Наранџаста
+Name[sr@latin]=Narandžasta
+Name[sr@ijekavian]=Наранџаста
+Name[sr@ijekavianlatin]=Narandžasta
+Icon=folder-orange
+Exec=printf "[Desktop Entry]\nIcon=folder-orange" > "%f/.directory" && for sname in $( qdbus6 --session "org.kde.dolphin-*" ) ; do isactive=false ; isactive=$( qdbus6 "$sname" "/dolphin/Dolphin_1" "org.qtproject.Qt.QWidget.isActiveWindow" ) ; $isactive && qdbus6 "$sname" "/dolphin/Dolphin_1/actions/view_redisplay"  "org.qtproject.Qt.QAction.trigger" ; done
+
+[Desktop Action ColorYellow]
+Name=Yellow
+Name[de]=Gelb
+Name[ca]=Groc
+Name[es]=Amarillo
+Name[pt]=Amarelo
+Name[pl]=Żółty
+Name[hu]=Sárga
+Name[fr]=Jaune
+Name[it]=Giallo
+Name[ru]=Желтый
+Name[sk]=Žltá
+Name[cs]=Žlutá
+Name[sr]=Жута
+Name[sr@latin]=Žuta
+Name[sr@ijekavian]=Жута
+Name[sr@ijekavianlatin]=Žuta
+Icon=folder-yellow
+Exec=printf "[Desktop Entry]\nIcon=folder-yellow" > "%f/.directory" && for sname in $( qdbus6 --session "org.kde.dolphin-*" ) ; do isactive=false ; isactive=$( qdbus6 "$sname" "/dolphin/Dolphin_1" "org.qtproject.Qt.QWidget.isActiveWindow" ) ; $isactive && qdbus6 "$sname" "/dolphin/Dolphin_1/actions/view_redisplay"  "org.qtproject.Qt.QAction.trigger" ; done
+
+[Desktop Action ColorGreen]
+Name=Green
+Name[de]=Grün
+Name[ca]=Verd
+Name[es]=Verde
+Name[pt]=Verde
+Name[pl]=Zielony
+Name[hu]=Zöld
+Name[fr]=Vert
+Name[it]=Verde
+Name[ru]=Зеленый
+Name[sk]=Zelená
+Name[cs]=Zelená
+Name[sr]=Зелена
+Name[sr@latin]=Zelena
+Name[sr@ijekavian]=Зелена
+Name[sr@ijekavianlatin]=Zelena
+Icon=folder-green
+Exec=printf "[Desktop Entry]\nIcon=folder-green" > "%f/.directory" && for sname in $( qdbus6 --session "org.kde.dolphin-*" ) ; do isactive=false ; isactive=$( qdbus6 "$sname" "/dolphin/Dolphin_1" "org.qtproject.Qt.QWidget.isActiveWindow" ) ; $isactive && qdbus6 "$sname" "/dolphin/Dolphin_1/actions/view_redisplay"  "org.qtproject.Qt.QAction.trigger" ; done
+
+[Desktop Action ColorBlue]
+Name=Blue
+Name[de]=Blau
+Name[ca]=Blau
+Name[es]=Azul
+Name[pt]=Azul
+Name[pl]=Niebieski
+Name[hu]=Kék
+Name[fr]=Bleu
+Name[it]=Blu
+Name[ru]=Синий
+Name[sk]=Modrá
+Name[cs]=Modrá
+Name[sr]=Плава
+Name[sr@latin]=Plava
+Name[sr@ijekavian]=Плава
+Name[sr@ijekavianlatin]=Plava
+Icon=folder-blue
+Exec=printf "[Desktop Entry]\nIcon=folder-blue" > "%f/.directory" && for sname in $( qdbus6 --session "org.kde.dolphin-*" ) ; do isactive=false ; isactive=$( qdbus6 "$sname" "/dolphin/Dolphin_1" "org.qtproject.Qt.QWidget.isActiveWindow" ) ; $isactive && qdbus6 "$sname" "/dolphin/Dolphin_1/actions/view_redisplay"  "org.qtproject.Qt.QAction.trigger" ; done
+
+[Desktop Action ColorViolet]
+Name=Violet
+Name[de]=Violett
+Name[ca]=Violeta
+Name[es]=Violeta
+Name[pt]=Violeta
+Name[pl]=Fioletowy
+Name[hu]=Lila
+Name[fr]=Violet
+Name[it]=Viola
+Name[ru]=Фиолетовый
+Name[sk]=Fialová
+Name[cs]=Fialová
+Name[sr]=Љубичаста
+Name[sr@latin]=Ljubičasta
+Name[sr@ijekavian]=Љубичаста
+Name[sr@ijekavianlatin]=Ljubičasta
+Icon=folder-violet
+Exec=printf "[Desktop Entry]\nIcon=folder-violet" > "%f/.directory" && for sname in $( qdbus6 --session "org.kde.dolphin-*" ) ; do isactive=false ; isactive=$( qdbus6 "$sname" "/dolphin/Dolphin_1" "org.qtproject.Qt.QWidget.isActiveWindow" ) ; $isactive && qdbus6 "$sname" "/dolphin/Dolphin_1/actions/view_redisplay"  "org.qtproject.Qt.QAction.trigger" ; done
+
+[Desktop Action ColorMagenta]
+Name=Magenta
+Name[pt]=Magenta
+Name[de]=Magenta
+Name[ca]=Magenta
+Name[es]=Magenta
+Name[pl]=Magenta
+Name[hu]=Magenta
+Name[fr]=Magenta
+Name[it]=Magenta
+Name[ru]=Пурпурный
+Name[sk]=Purpurová
+Name[cs]=Purpurová
+Name[sr]=Магента
+Name[sr@latin]=Magenta
+Name[sr@ijekavian]=Магента
+Name[sr@ijekavianlatin]=Magenta
+Icon=folder-magenta
+Exec=printf "[Desktop Entry]\nIcon=folder-magenta" > "%f/.directory" && for sname in $( qdbus6 --session "org.kde.dolphin-*" ) ; do isactive=false ; isactive=$( qdbus6 "$sname" "/dolphin/Dolphin_1" "org.qtproject.Qt.QWidget.isActiveWindow" ) ; $isactive && qdbus6 "$sname" "/dolphin/Dolphin_1/actions/view_redisplay"  "org.qtproject.Qt.QAction.trigger" ; done
+
+[Desktop Action ColorBrown]
+Name=Brown
+Name[pt]=Marrom
+Name[de]=Braun
+Name[ca]=Marró
+Name[es]=Marrón
+Name[pl]=Brązowy
+Name[hu]=Barna
+Name[fr]=Marron
+Name[it]=Marrone
+Name[ru]=Коричневый
+Name[sk]=Hnedá
+Name[cs]=Hnědá
+Name[sr]=Смеђа
+Name[sr@latin]=Smeđa
+Name[sr@ijekavian]=Смеђа
+Name[sr@ijekavianlatin]=Smeđa
+Icon=folder-brown
+Exec=printf "[Desktop Entry]\nIcon=folder-brown" > "%f/.directory" && for sname in $( qdbus6 --session "org.kde.dolphin-*" ) ; do isactive=false ; isactive=$( qdbus6 "$sname" "/dolphin/Dolphin_1" "org.qtproject.Qt.QWidget.isActiveWindow" ) ; $isactive && qdbus6 "$sname" "/dolphin/Dolphin_1/actions/view_redisplay"  "org.qtproject.Qt.QAction.trigger" ; done
+
+[Desktop Action ColorCyan]
+Name=Cyan
+Name[de]=Cyan
+Name[ca]=Cian
+Name[es]=Cian
+Name[pt]=Ciano
+Name[pl]=Błękitny
+Name[hu]=Cián
+Name[fr]=Cyan
+Name[it]=Ciano
+Name[ru]=Голубой
+Name[sk]=Modrozelená
+Name[cs]=Modrozelená
+Name[sr]=Цијан
+Name[sr@latin]=Cijan
+Name[sr@ijekavian]=Цијан
+Name[sr@ijekavianlatin]=Cijan
+Icon=folder-cyan
+Exec=printf "[Desktop Entry]\nIcon=folder-cyan" > "%f/.directory" && for sname in $( qdbus6 --session "org.kde.dolphin-*" ) ; do isactive=false ; isactive=$( qdbus6 "$sname" "/dolphin/Dolphin_1" "org.qtproject.Qt.QWidget.isActiveWindow" ) ; $isactive && qdbus6 "$sname" "/dolphin/Dolphin_1/actions/view_redisplay"  "org.qtproject.Qt.QAction.trigger" ; done
+
+[Desktop Action ColorGrey]
+Name=Grey
+Name[de]=Grau
+Name[ca]=Gris
+Name[es]=Gris
+Name[pt]=Cinza
+Name[pl]=Szary
+Name[hu]=Szürke
+Name[fr]=Gris
+Name[it]=Grigio
+Name[ru]=Серый
+Name[sk]=Šedá
+Name[cs]=Šedá
+Name[sr]=Сива
+Name[sr@latin]=Siva
+Name[sr@ijekavian]=Сива
+Name[sr@ijekavianlatin]=Siva
+Icon=folder-grey
+Exec=printf "[Desktop Entry]\nIcon=folder-grey" > "%f/.directory" && for sname in $( qdbus6 --session "org.kde.dolphin-*" ) ; do isactive=false ; isactive=$( qdbus6 "$sname" "/dolphin/Dolphin_1" "org.qtproject.Qt.QWidget.isActiveWindow" ) ; $isactive && qdbus6 "$sname" "/dolphin/Dolphin_1/actions/view_redisplay"  "org.qtproject.Qt.QAction.trigger" ; done
+
+[Desktop Action ColorBlack]
+Name=Black
+Name[pt]=Preto
+Name[de]=Schwarz
+Name[ca]=Negre
+Name[es]=Negro
+Name[pl]=Czarny
+Name[hu]=Fekete
+Name[fr]=Noir
+Name[it]=Nero
+Name[ru]=Черный
+Name[sk]=Čierna
+Name[cs]=Černá
+Name[sr]=Црна
+Name[sr@latin]=Crna
+Name[sr@ijekavian]=Црна
+Name[sr@ijekavianlatin]=Crna
+Icon=folder-black
+Exec=printf "[Desktop Entry]\nIcon=folder-black" > "%f/.directory" && for sname in $( qdbus6 --session "org.kde.dolphin-*" ) ; do isactive=false ; isactive=$( qdbus6 "$sname" "/dolphin/Dolphin_1" "org.qtproject.Qt.QWidget.isActiveWindow" ) ; $isactive && qdbus6 "$sname" "/dolphin/Dolphin_1/actions/view_redisplay"  "org.qtproject.Qt.QAction.trigger" ; done

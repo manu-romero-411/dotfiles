@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+/home/manuel/.local/lib/jetbrains-toolbox/bin/jetbrains-toolbox "$@"
+exit $?

@@ -1,0 +1,25 @@
+#!/bin/bash
+
+## DESHABILITAR PITIDOS EN LA NOCHE
+hora=$(date +%H)
+if [ $hora -lt 8 ]; then
+	echo "[info] Pitidos deshabilitados en la madrugada"
+	exit 0
+fi
+
+## CORRECCIÓN DE LOS MILISEGUNDOS
+milisec=$(date +%N | cut -c 1-3)
+sleep 0.$((1000 - ${milisec#0}))
+
+if [ $(date +%S) -gt 55 ]; then
+	exit 1
+else
+	while [ $(date +%S) -lt 54 ]; do
+		sleep 1
+	done
+
+	if [ $(date +%M) -eq 59 ]; then # CORRECCIÓN POR SI PONEMOS EL PC EN STANDBY A Y 59, Y LO REANUDAMOS EN OTRO MINUTO
+		play /home/manuel/.sounds/bbc-pip.ogg
+	fi
+	exit 0
+fi

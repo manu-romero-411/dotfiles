@@ -1,0 +1,23 @@
+#!/bin/bash
+
+function ps_list(){
+	ps -aux | grep "$1" | grep -v grep | awk '{print $2}' | wc -l
+}
+
+function ps_kill(){
+	if [ $(ps_list "$1") -gt 0 ]; then
+		ps -aux | grep -Ei "$1" | grep -v grep | awk '{print $2}' | xargs kill -9
+	fi
+}
+
+ps_kill PPSSPPSDL
+ps_kill pcsx2-qt
+ps_kill citron-emu
+ps_kill eden-emu
+ps_kill ryubing
+ps_kill ryujinx
+ps_kill dolphin-emu
+ps_kill kodi
+ps_kill Ubisoft
+ps_kill "google/chrome"
+

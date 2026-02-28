@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=Win Gaming VM
+Exec=/usr/local/bin/vfio-start-vm win-gaming
+Icon=computer
+Terminal=false
+Categories=VFIO;

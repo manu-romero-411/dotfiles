@@ -1,0 +1,4 @@
+#!/bin/bash
+
+asusctl aura effect static -c 0082a6
+exit $?

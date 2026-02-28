@@ -1,0 +1,13 @@
+[Desktop Entry]
+Type=Service
+Icon=vlc
+Actions=vlc
+X-KDE-Priority=TopLevel
+MimeType=inode/directory;inode/directory-locked
+TryExec=vlc
+
+[Desktop Action vlc]
+Exec=vlc '%f'
+Icon=vlc
+Name=Open all media files in VLC
+Name[es]=Abrir en VLC

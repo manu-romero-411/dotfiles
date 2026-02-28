@@ -1,0 +1,7 @@
+#!/bin/bash
+
+DIR=/penguin/aplicaciones/igir
+
+cd "${DIR}"
+"${DIR}/igir" "${@}"
+exit $?

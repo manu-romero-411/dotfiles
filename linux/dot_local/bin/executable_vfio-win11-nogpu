@@ -1,0 +1,12 @@
+#!/bin/bash
+
+virsh start win11-nogpu
+virt-manager --connect qemu:///system --show-domain-console win11-nogpu
+
+#while ! timeout 0.2 ping -c 1 -n 192.168.122.101 &> /dev/null; do
+	true
+#done
+
+#sleep 4
+#remmina -c /home/manuel/.local/share/remmina/group_rdp_win11-nogpu_192-168-122-101.remmina
+exit $?

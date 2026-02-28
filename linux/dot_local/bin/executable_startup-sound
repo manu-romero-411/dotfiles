@@ -1,0 +1,5 @@
+#!/bin/bash
+
+#play /home/manuel/.sounds/o98.wav
+play /home/manuel/.sounds/cortinilla-tve-fall2014.ogg
+exit $?

@@ -1,0 +1,11 @@
+<!DOCTYPE Menu PUBLIC "-//freedesktop//DTD Menu 1.0//EN"
+ "http://www.freedesktop.org/standards/menu-spec/menu-1.0.dtd">
+<Menu>
+  <Menu>
+    <Name>VFIO</Name>
+    <Directory>vfio.directory</Directory>
+    <Include>
+      <Category>VFIO</Category>
+    </Include>
+  </Menu>
+</Menu>

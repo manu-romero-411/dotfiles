@@ -1,0 +1,27 @@
+#!/bin/bash
+
+function help(){
+	echo "uso: $0 <directorio de myrient> <directorio local destino>"
+}
+
+function download(){
+	rclone config create Myrient http url https://myrient.erista.me/files/
+	rclone copy "Myrient:$1" "$2" -vP || return 1
+}
+
+if [ -z "$1" ]; then
+	help "$@"
+	exit 1
+fi
+
+if [ ! -z "$3" ]; then
+	help "$@"
+	exit 1
+fi
+
+if [ ! -d "$2" ]; then
+	mkdir -p "$2"
+fi
+
+download "$@" || exit 1
+exit 0

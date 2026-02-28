@@ -1,0 +1,4 @@
+#!/bin/bash
+
+asusctl aura effect static -c ff3105
+exit $?

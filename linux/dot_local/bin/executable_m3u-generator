@@ -1,0 +1,46 @@
+#!/bin/bash
+
+shopt -s nullglob
+
+EXTS=("iso" "gdi" "cue" "chd" "rvz")
+
+# Detecta "(Disc X)" o "(Disk X)" en cualquier parte
+DISK_REGEX='^(.*)\( *[Dd]is[ck] *([0-9]+) *\).*$'
+
+declare -A groups
+
+for ext in "${EXTS[@]}"; do
+    for f in *."$ext"; do
+        filename="${f%.*}"
+
+        if [[ "$filename" =~ $DISK_REGEX ]]; then
+            base="${BASH_REMATCH[1]}"
+            disknum="${BASH_REMATCH[2]}"
+
+            # Limpieza de espacios
+            base="$(echo "$base" | sed 's/  */ /g' | sed 's/ *$//')"
+
+            key="$base"
+
+            groups["$key"]+="$disknum|$f"$'\n'
+        fi
+    done
+done
+
+# Generar M3U
+for key in "${!groups[@]}"; do
+    entries="${groups[$key]}"
+    num_disks=$(echo "$entries" | grep -c .)
+
+    if (( num_disks > 1 )); then
+        m3u_name="${key}.m3u"
+        echo "Generando: $m3u_name"
+
+        echo "$entries" \
+            | sort -n -t '|' -k1,1 \
+            | cut -d '|' -f2 \
+            > "$m3u_name"
+    fi
+done
+
+echo "Proceso completado."
