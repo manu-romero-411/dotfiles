@@ -1,3 +1,0 @@
-echo $PATH
-nano .zshrc.d/03-jetbrains.zsh
-nano .zshrc.d/03-jetbrains.zsh

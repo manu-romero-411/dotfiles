@@ -1,5 +1,0 @@
-which brew
-which nano
-brew install nano
-echo $PATH
-/opt/homebrew/bin/brew shellenv

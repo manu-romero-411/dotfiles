@@ -1,6 +1,0 @@
-cat .zprofile
-echo $PATH
-cat .zshrc
-mkdir .zprofile.d
-mv .zprofile .zprofile.d/01-jetbrains
-nano .zprofile

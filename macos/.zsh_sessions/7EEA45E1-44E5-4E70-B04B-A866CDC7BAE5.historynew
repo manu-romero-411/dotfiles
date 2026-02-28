@@ -1,2 +1,0 @@
-mv .zshenv.d/00-brew.zsh .zshrc.d/02-brew.zsh
-nano .zshrc.d/02-brew.zsh

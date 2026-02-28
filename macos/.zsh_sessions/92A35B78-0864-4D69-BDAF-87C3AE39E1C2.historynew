@@ -1,5 +1,0 @@
-echo $PATH
-mv .zshrc .zshrcold
-mv .zprofile .zshenv
-mv .zprofile.d .zshenv.d
-nano .zshenv

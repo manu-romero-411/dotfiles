@@ -1,6 +1,0 @@
-brew doctor
-echo $PATH
-/usr/libexec/path_helper
-nano .zshenv
-mv .zshenv.d/01-jetbrains.zsh .zshrc.d/03-jetbrains.zsh
-rm -r .zshenv.d

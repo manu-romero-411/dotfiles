@@ -1,6 +1,0 @@
-git config --global --edit
-EDITOR=nano git config --global --edit
-echo $EDITOR
-EDITOR=$EDITOR git config --global --edit
-nano .zshrc
-nano .zshrc

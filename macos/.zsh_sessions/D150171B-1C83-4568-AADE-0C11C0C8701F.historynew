@@ -1,9 +1,0 @@
-brew doctor
-echo $PATH
-ls -l
-ls -l .zsh*
-source .zshenv
-brew doctor
-cat .zshrc
-nano .zshrc
-nano .zshenv
