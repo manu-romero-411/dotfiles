@@ -7,8 +7,11 @@ Show Status Bar=true
 Show Tab Bar=true
 Show Url Nav Bar=true
 
+[MainWindow]
+2 screens: Window-Maximized=true
+
 [filetree]
-editShade=30,78,103
+editShade=183,220,246
 listMode=false
 middleClickToClose=false
 shadingEnabled=true
@@ -16,4 +19,4 @@ showCloseButton=false
 showFullPathOnRoots=false
 showToolbar=true
 sortRole=0
-viewShade=77,46,91
+viewShade=211,190,222

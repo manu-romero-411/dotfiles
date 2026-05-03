@@ -1,0 +1,178 @@
+#!/bin/bash
+# =============================================================================
+# asus-tuf-kbd-rgb.sh
+# Control del RGB del teclado ASUS TUF A15 via sysfs
+# Sin dependencias externas — no requiere asusctl ni nada similar.
+# Funciona en cualquier distro Linux con el módulo asus-wmi cargado.
+#
+# Formato escrito al sysfs: "1 <MODO> <R> <G> <B> <VELOCIDAD>"
+#   MODO:      0=Static  1=Breath  2=Rainbow
+#   R/G/B:     0-255
+#   VELOCIDAD: 0=Low  1=Medium  2=High
+#
+# Uso:
+#   ./asus-tuf-kbd-rgb.sh --mode static --color 255 0 128 --brightness 3
+#   ./asus-tuf-kbd-rgb.sh --mode breathe --color 0 180 255 --speed medium --brightness 2
+#   ./asus-tuf-kbd-rgb.sh --mode rainbow --speed high --brightness 3
+#   ./asus-tuf-kbd-rgb.sh --brightness 0         # apagar leds
+#   ./asus-tuf-kbd-rgb.sh --detect               # detectar rutas sysfs
+# =============================================================================
+
+# --- Rutas sysfs candidatas (se prueba en orden, se usa la primera existente) ---
+RGB_PATHS=(
+    "/sys/class/leds/asus::kbd_backlight/kbd_rgb_mode"
+    "/sys/devices/platform/asus-nb-wmi/leds/asus::kbd_backlight/kbd_rgb_mode"
+    "/sys/class/leds/asus-nb-wmi::kbd_backlight/kbd_rgb_mode"
+)
+BRIGHTNESS_PATHS=(
+    "/sys/class/leds/asus::kbd_backlight/brightness"
+    "/sys/devices/platform/asus-nb-wmi/leds/asus::kbd_backlight/brightness"
+    "/sys/class/leds/asus-nb-wmi::kbd_backlight/brightness"
+)
+
+# =============================================================================
+# Auxiliares
+# =============================================================================
+
+SILENT=false
+
+info() { $SILENT || echo "[INFO]  $*"; }
+err()  { echo "[ERROR] $*" >&2; exit 1; }
+
+find_path() {
+    for p in "$@"; do [[ -e "$p" ]] && echo "$p" && return 0; done
+    return 1
+}
+
+sysfs_write() {
+    local path="$1" value="$2"
+    if [[ -w "$path" ]]; then
+        echo "$value" > "$path"
+    elif command -v sudo &>/dev/null; then
+        echo "$value" | sudo tee "$path" > /dev/null
+    else
+        err "Sin permisos de escritura en '$path' y sudo no disponible."
+    fi
+}
+
+# =============================================================================
+# Detección
+# =============================================================================
+
+cmd_detect() {
+    info "Buscando rutas sysfs del teclado ASUS TUF..."
+    echo ""
+    local rgb_found brt_found
+    rgb_found=$(find_path "${RGB_PATHS[@]}")        && info "  RGB mode : $rgb_found"  || info "  [!] Ruta RGB no encontrada"
+    brt_found=$(find_path "${BRIGHTNESS_PATHS[@]}") && info "  Brillo   : $brt_found"  || info "  [!] Ruta brillo no encontrada"
+    echo ""
+    info "Módulos asus/wmi activos:"
+    lsmod | grep -iE "asus|wmi" || info "  (ninguno — prueba: modprobe asus-wmi)"
+}
+
+# =============================================================================
+# Ayuda
+# =============================================================================
+
+usage() {
+    cat <<EOF
+Uso: $0 [OPCIONES]
+
+  --mode       <static|breathe|rainbow>   Modo de iluminación  (default: static)
+  --color      <R> <G> <B> | #rrggbb      Color RGB 0-255       (default: 255 255 255)
+                                           Ignorado en modo rainbow
+  --speed      <off|low|medium|high>     Velocidad del efecto  (default: low)
+  --brightness <0|1|2|3>                Brillo de los LEDs     (default: 3)
+                                           0=apagado, 3=máximo
+  --detect                               Detectar rutas sysfs y salir
+  --silent                               Modo silencioso
+  --help                                 Mostrar esta ayuda
+
+EJEMPLOS:
+  $0 --mode static  --color 255 0 128 --brightness 3
+  $0 --mode breathe --color 0 100 255 --speed medium --brightness 2
+  $0 --mode rainbow --speed high --brightness 3
+  $0 --brightness 0
+EOF
+}
+
+# =============================================================================
+# Parseo de argumentos
+# =============================================================================
+
+ARG_MODE="static"
+ARG_R=255; ARG_G=255; ARG_B=255
+ARG_SPEED=3  # low por defecto (escala invertida: 1=rápido, 3=lento)
+ARG_BRIGHTNESS=3
+DO_DETECT=false
+
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        --mode)
+            ARG_MODE="$2"; shift 2 ;;
+        --color)
+            if [[ "$2" =~ ^#([0-9a-fA-F]{6})$ ]]; then
+                ARG_R=$(( 16#${BASH_REMATCH[1]:0:2} ))
+                ARG_G=$(( 16#${BASH_REMATCH[1]:2:2} ))
+                ARG_B=$(( 16#${BASH_REMATCH[1]:4:2} ))
+                shift 2
+            elif [[ "$2" =~ ^[0-9]+$ && "$3" =~ ^[0-9]+$ && "$4" =~ ^[0-9]+$ ]]; then
+                ARG_R="$2"; ARG_G="$3"; ARG_B="$4"
+                (( ARG_R <= 255 && ARG_G <= 255 && ARG_B <= 255 )) || \
+                    err "--color: valores RGB fuera de rango [0-255] (R=$ARG_R G=$ARG_G B=$ARG_B)"
+                shift 4
+            else
+                err "--color requiere '#rrggbb' o tres enteros 0-255 (ej: --color 255 0 128)"
+            fi ;;
+        --speed)
+            case "$2" in
+                high)   ARG_SPEED=2 ;;
+                medium) ARG_SPEED=1 ;;
+                low)    ARG_SPEED=0 ;;
+                *) err "Velocidad desconocida: '$2'. Usa: low, medium, high" ;;
+            esac
+            shift 2 ;;
+        --brightness)
+            ARG_BRIGHTNESS="$2"
+            [[ "$ARG_BRIGHTNESS" =~ ^[0-3]$ ]] || err "Brillo debe ser 0, 1, 2 o 3"
+            shift 2 ;;
+        --detect)
+            DO_DETECT=true; shift ;;
+        --help|-h)
+            usage; exit 0 ;;
+        --silent)
+            SILENT=true; shift ;;
+        *)
+            err "Argumento desconocido: '$1'. Usa --help." ;;
+    esac
+done
+
+# =============================================================================
+# Ejecución
+# =============================================================================
+
+$DO_DETECT && { cmd_detect; exit 0; }
+
+# Modo numérico
+case "$ARG_MODE" in
+    static)  MODE_NUM=0 ;;
+    breathe) MODE_NUM=1 ;;
+    rainbow) MODE_NUM=2 ;;
+    *) err "Modo desconocido: '$ARG_MODE'. Usa: static, breathe, rainbow" ;;
+esac
+
+# Resolver rutas
+RGB_PATH=$(find_path "${RGB_PATHS[@]}")        || err "Ruta sysfs RGB no encontrada. Ejecuta --detect."
+BRT_PATH=$(find_path "${BRIGHTNESS_PATHS[@]}") || err "Ruta sysfs brillo no encontrada. Ejecuta --detect."
+
+# Formato exacto del driver asus-wmi: "1 <modo> <R> <G> <B> <velocidad>"
+SYSFS_VALUE="1 ${MODE_NUM} ${ARG_R} ${ARG_G} ${ARG_B} ${ARG_SPEED}"
+
+info "RGB mode  : '$SYSFS_VALUE' → $RGB_PATH"
+sysfs_write "$RGB_PATH" "$SYSFS_VALUE"
+
+info "Brillo    : $ARG_BRIGHTNESS → $BRT_PATH"
+sysfs_write "$BRT_PATH" "$ARG_BRIGHTNESS"
+
+info "Listo."
+

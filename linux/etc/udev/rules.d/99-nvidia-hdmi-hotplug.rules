@@ -1,0 +1,2 @@
+ACTION=="change", SUBSYSTEM=="drm", KERNEL=="card0", \
+  RUN+="/bin/sh -c 'sleep 1 && echo detect > /sys/class/drm/card0/card0-HDMI-A-1/status'"
