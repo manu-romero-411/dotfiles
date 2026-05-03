@@ -1,0 +1,72 @@
+#!/bin/bash
+
+# Uso: ./uplay-cleaner-slug.sh rayman-legends
+SLUG_INPUT=$1
+
+if [ -z "$SLUG_INPUT" ]; then
+    echo "Uso: $0 <slug-del-juego>"
+    exit 1
+fi
+
+# 1. Localizar el archivo YML más reciente para extraer el ejecutable real
+LUTRIS_CONF_DIR="$HOME/.local/share/lutris/games"
+YML_PATH=$(ls -vt "$LUTRIS_CONF_DIR/$SLUG_INPUT"*.yml 2>/dev/null | head -n 1)
+
+if [ -z "$YML_PATH" ]; then
+    echo "Error: No se encontró el archivo .yml para el slug: $SLUG_INPUT"
+    exit 1
+fi
+
+# Extraer el .exe y el prefijo de Wine de forma limpia
+GAME_EXE=$(grep "^  exe: " "$YML_PATH" | head -n 1 | sed 's/  exe: //' | tr -d '\r' | xargs)
+WINE_PREFIX=$(grep "^  prefix: " "$YML_PATH" | head -n 1 | sed 's/  prefix: //' | tr -d '\r' | xargs)
+EXE_NAME=$(basename "$GAME_EXE")
+
+# 2. Calcular el ID numérico de Lutris a partir del slug
+# Buscamos en la salida de 'lutris -l' la línea que contenga el slug y extraemos el primer campo (ID)
+GAME_ID=$(lutris -l | grep "| $SLUG_INPUT " | awk -F '|' '{print $1}' | xargs)
+
+if [ -z "$GAME_ID" ]; then
+    echo "Error: No se pudo encontrar el ID numérico para el slug $SLUG_INPUT en Lutris."
+    exit 1
+fi
+
+echo "--- Configuración detectada ---"
+echo "ID Lutris: $GAME_ID"
+echo "Slug: $SLUG_INPUT"
+echo "Vigilando proceso: $EXE_NAME"
+echo "-------------------------------"
+
+# 3. Lanzar el juego de forma oficial
+lutris "lutris:rungameid/$GAME_ID" &
+
+# 4. Esperar a que el juego real aparezca
+echo "Lanzando... Esperando a que '$EXE_NAME' se inicie..."
+COUNT=0
+while ! pgrep -f "$EXE_NAME" > /dev/null && [ $COUNT -lt 60 ]; do
+    sleep 1
+    ((COUNT++))
+    if (( $COUNT % 10 == 0 )); then echo "... ($COUNT s) ..."; fi
+done
+
+if ! pgrep -f "$EXE_NAME" > /dev/null; then
+    echo "Error: El juego no se detectó. ¿Quizás Ubisoft Connect se quedó colgado?"
+    exit 1
+fi
+
+echo "¡Juego detectado! La sesión de Sunshine se mantendrá activa hasta que cierres el juego."
+
+# 5. Bucle de vigilancia
+while pgrep -f "$EXE_NAME" > /dev/null; do
+    sleep 2
+done
+
+# 6. LA PURGA (Puta Ubisoft)
+echo "El juego ha cerrado. Liquidando procesos de Ubisoft y Wine..."
+pkill -f "UbisoftConnect.exe"
+pkill -f "upc.exe"
+pkill -f "UplayWebCore.exe"
+
+# Matamos el servidor de wine de ese prefijo específico para no dejar basura
+WINEPREFIX="$WINE_PREFIX" wineserver -k 2>/dev/null
+

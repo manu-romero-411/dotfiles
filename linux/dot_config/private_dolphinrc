@@ -1,12 +1,13 @@
 [General]
+OpenExternallyCalledFolderInNewTab=true
 RememberOpenedTabs=false
 ShowStatusBar=FullWidth
 Version=202
-ViewPropsTimestamp=2026,1,10,19,12,23.283
+ViewPropsTimestamp=2026,3,29,13,19,30.152
 
 [KFileDialog Settings]
 Places Icons Auto-resize=false
 Places Icons Static Size=22
 
 [PreviewSettings]
-Plugins=ffmpegthumbs,fontthumbnail,blenderthumbnail,gsthumbnail,mobithumbnail,rawthumbnail,appimagethumbnail,audiothumbnail,comicbookthumbnail,cursorthumbnail,directorythumbnail,djvuthumbnail,ebookthumbnail,exrthumbnail,imagethumbnail,jpegthumbnail,kraorathumbnail,opendocumentthumbnail,svgthumbnail,windowsexethumbnail,windowsimagethumbnail,webarchivethumbnail,gdk-pixbuf-thumbnailer
+Plugins=blenderthumbnail,cursorthumbnail,mobithumbnail,fontthumbnail,ffmpegthumbs,djvuthumbnail,rawthumbnail,directorythumbnail,kraorathumbnail,gdk-pixbuf-thumbnailer,imagethumbnail,windowsimagethumbnail,exrthumbnail,jpegthumbnail,svgthumbnail,comicbookthumbnail,ebookthumbnail

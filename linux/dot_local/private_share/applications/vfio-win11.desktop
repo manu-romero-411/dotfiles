@@ -1,7 +1,0 @@
-[Desktop Entry]
-Type=Application
-Name=Win11 VM
-Exec=/usr/local/bin/vfio-start-vm win11
-Icon=computer
-Terminal=false
-Categories=VFIO;

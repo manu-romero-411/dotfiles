@@ -1,7 +1,0 @@
-#!/bin/bash
-
-DIR=/pcgrande/Aplicaciones/retool
-cd $DIR
-
-python $DIR/retoolgui.py "$@"
-exit $?

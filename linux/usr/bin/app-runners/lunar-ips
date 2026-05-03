@@ -1,6 +1,0 @@
-#!/bin/bash
-
-LUNAR_DIR=/pcgrande/Aplicaciones/lunar_ips
-
-wine "$LUNAR_DIR/Lunar IPS.exe" "$@"
-exit $?

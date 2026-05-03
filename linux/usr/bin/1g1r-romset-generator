@@ -1,0 +1,5 @@
+#!/bin/bash
+
+DIR=/penguin/aplicaciones/alternative-1g1r-romset-generator
+python "$DIR/generate.py" "$@"
+exit $?

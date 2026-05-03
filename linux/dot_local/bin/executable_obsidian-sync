@@ -1,6 +1,13 @@
 #!/bin/bash
 
-MANUBLOGC="/penguin/documentos/manuVault"
+set -uo pipefail
+
+MANUBLOGC="/home/manuel/Documentos/manuVault"
+if [ ! -d "$MANUBLOGC" ]; then
+	echo "[ERROR] No existe el directorio $MANUBLOGC"
+	exit 1
+fi
+
 DISPOSITIVO=ryzencraft
 
 function git_add(){

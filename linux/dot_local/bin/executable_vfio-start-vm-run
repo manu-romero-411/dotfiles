@@ -1,68 +1,78 @@
 #!/bin/bash
+set -x
+# Configuración de colores
+RED='\033[1;31m'
+BLUE='\033[1;36m'
+NC='\033[0m'
 
-function error(){
-	RED='\033[1;31m'
-	NC='\033[0m'
-	printf "${RED}[ERROR] $@ ${NC}\n"
-}
+function error() { printf "${RED}[ERROR] %s ${NC}\n" "$*"; }
+function info()  { printf "${BLUE}[INFO] %s ${NC}\n" "$*"; }
 
-function info(){
-	BLUE='\033[1;36m'
-	NC='\033[0m'
-	printf "${BLUE}[INFO] $@ ${NC}\n"
-}
-
-
-function check_root() {
-	if [[ $(whoami) != root ]]; then
-		error "No eres root"
-		exit 1
-	fi
-}
-
-if [ -z $1 ]; then
-	error "Falta un argumento"
-	exit 1
+# 1. Validaciones iniciales
+if [ -z "$1" ]; then
+    error "Falta el nombre de la VM o el argumento -b"
+    exit 1
 fi
 
+# 2. Lógica de selección de VM
 MAQUINA_VM=""
-
 if [[ "$1" == "-b" ]]; then
-	cmdline=$(cat /proc/cmdline)
-	if ! echo $cmdline | grep "vfio="; then
-		exit 1
-	fi
-	MAQUINA_VM=$(echo $cmdline | grep -o 'vfio=[^ ]*' | cut -d"=" -f2)
+    cmdline=$(cat /proc/cmdline)
+    if [[ ! $cmdline =~ vfio=([^ ]+) ]]; then
+        error "No se encontró el parámetro vfio= en /proc/cmdline"
+        exit 1
+    fi
+    MAQUINA_VM="${BASH_REMATCH[1]}"
 else
-	MAQUINA_VM=$1
+    MAQUINA_VM="$1"
 fi
 
-if ! virsh --connect qemu:///system list --all --name | grep -w $MAQUINA_VM >/dev/null; then
-	error "La máquina virtual $MAQUINA_VM no existe. Prueba con:"
-	virsh list --all --name
-	exit 1
+# Verificar existencia de la VM
+if ! virsh list --all --name | grep -qx "$MAQUINA_VM"; then
+    error "La máquina virtual '$MAQUINA_VM' no existe."
+    exit 1
 fi
 
-if virsh list | grep "running" | grep "$MAQUINA_VM-nogpu"; then
-	virsh destroy "$MAQUINA_VM-nogpu"
+# 3. Cerrar sesión de Plasma KDE de forma elegante
+info "Cerrando sesión de KDE Plasma..."
+
+# Obtenemos el usuario que lanzó el sudo
+REAL_USER="${SUDO_USER:-$USER}"
+USER_ID=$(id -u "$REAL_USER")
+
+# Ejecutamos el logout como el usuario de la sesión
+sudo -u "$REAL_USER" DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/"$USER_ID"/bus \
+    qdbus-qt6 org.kde.Shutdown /Shutdown logout
+
+# 4. Bucle de espera crucial
+info "Esperando a que la sesión de usuario finalice completamente..."
+
+MAX_RETRIES=60
+COUNT=0
+
+# Esperamos a que el proceso principal de Plasma desaparezca
+while pgrep -u "$USER_ID" -x "plasmashell" > /dev/null; do
+    sleep 0.5
+    ((COUNT++))
+    if [ $COUNT -ge $MAX_RETRIES ]; then
+        error "Tiempo de espera agotado. Algunos procesos de Plasma siguen vivos."
+        info "Forzando cierre de procesos restantes del usuario..."
+        skill -u "$REAL_USER"
+        break
+    fi
+done
+
+# Respiro extra para que el driver termine de limpiar
+sleep 2
+
+info "=== Iniciando $MAQUINA_VM -- $(date '+%H:%M:%S') ==="
+
+# 5. Ejecución de la VM
+if virsh start "$MAQUINA_VM"; then
+    info "VM iniciada con éxito."
+else
+    error "Fallo al iniciar la VM."
+    exit 1
 fi
 
-#if pidof xfce4-session && [[ $1 != "-b" ]]; then
-#	xfce4-session-logout -lf &
-#	XFCESESSION=1
-#	while [ $XFCESESSION != 0 ]; do
-#		if ! pidof xfce4-session; then
-#			XFCESESSION=0
-#		fi
-#		sleep 0.5
-#	done
-#
-#fi
-
-# qdbus org.kde.ksmserver /KSMServer logout 0 0 1
-qdbus-qt6 org.kde.Shutdown /Shutdown logout
-
-info "=== Iniciando $MAQUINA_VM -- $(date '+%a %d/%m/%Y %H:%M:%S') ==="
-virsh start $MAQUINA_VM || exit 1
-#virsh console $MAQUINA_VM
 exit 0

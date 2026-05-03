@@ -1,0 +1,12 @@
+#!/bin/bash
+
+set -euo pipefail
+
+# Eliminar configuración cacheada de PowerDevil
+rm -f ~/.local/share/powerdevil/brightness*
+rm -f ~/.config/powermanagementprofilesrc
+
+# Reiniciar solo PowerDevil sin cerrar sesión
+systemctl --user restart plasma-powerdevil
+
+exit 0

@@ -1,0 +1,9 @@
+[core]
+	autocrlf = false
+	eol = lf
+
+[user]
+	name = "Manuel Jesús Romero Mateos"
+	email = "manu4.2012@gmail.com"
+[init]
+	defaultBranch = main

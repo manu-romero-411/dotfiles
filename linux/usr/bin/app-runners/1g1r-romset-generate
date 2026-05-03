@@ -1,4 +1,0 @@
-#!/bin/bash
-
-/pcgrande/Aplicaciones/retool/alternative-1g1r-romset-generator/generate.py "$@"
-exit $?

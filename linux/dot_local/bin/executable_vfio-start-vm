@@ -1,3 +1,3 @@
 #!/bin/bash
 
-nohup setsid /usr/local/bin/vfio-start-vm-run "$1" > /dev/null 2>&1 &
+nohup setsid /home/manuel/.local/bin/vfio-start-vm-run "$1" > /dev/null 2>&1 &

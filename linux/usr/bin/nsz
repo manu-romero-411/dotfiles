@@ -1,0 +1,6 @@
+#!/bin/bash
+
+DIR=/penguin/aplicaciones/nsz
+
+python "$DIR/nsz.py" "${@}"
+exit $?

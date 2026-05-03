@@ -9,5 +9,5 @@
 # /srv/nfs4/homes  gss/krb5i(rw,sync,no_subtree_check)
 #
 
-/pcgrande	192.168.0.0/24(rw,async,no_root_squash,no_subtree_check,anonuid=1000,anongid=1001)
-/pcgrande	192.168.122.0/24(rw,async,all_squash,no_subtree_check,anonuid=1000,anongid=1001)
+/penguin	192.168.0.0/24(rw,async,no_root_squash,no_subtree_check,anonuid=1000,anongid=1001)
+/penguin	192.168.122.0/24(rw,async,all_squash,no_subtree_check,anonuid=1000,anongid=1001)

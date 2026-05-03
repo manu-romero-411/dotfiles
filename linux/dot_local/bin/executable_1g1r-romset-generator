@@ -1,4 +1,0 @@
-#!/bin/bash
-
-python /penguin/aplicaciones/alternative-1g1r-romset-generator/generate.py "$@"
-exit $?

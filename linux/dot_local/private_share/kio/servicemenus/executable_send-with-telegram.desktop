@@ -1,0 +1,13 @@
+[Desktop Entry]
+Type=Service
+Icon=org.telegram.desktop
+Actions=telegram
+X-KDE-Priority=TopLevel
+MimeType=all/allfiles
+TryExec=telegram-desktop
+
+[Desktop Action telegram]
+Exec=telegram-desktop -sendpath '%F'
+Icon=org.telegram.desktop
+Name=Send with Telegram Desktop
+Name[es]=Enviar con Telegram Desktop

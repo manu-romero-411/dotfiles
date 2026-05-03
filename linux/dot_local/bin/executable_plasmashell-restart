@@ -1,4 +1,3 @@
 #!/bin/bash
 
-killall plasmashell
-plasmashell
+systemctl --user restart plasma-plasmashell.service

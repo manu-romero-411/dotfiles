@@ -1,0 +1,8 @@
+#!/bin/bash
+
+set -euo pipefail
+
+mkdir -p ~/.local/share/lutris/runners/wine
+ln -sfn ~/.config/heroic/tools/wine/* ~/.local/share/lutris/runners/wine/
+ln -sfn ~/.config/heroic/tools/proton/* ~/.local/share/lutris/runners/wine/
+exit 0

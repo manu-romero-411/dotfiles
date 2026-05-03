@@ -26,11 +26,11 @@ shift 2   # Ahora $@ contiene solo los archivos
 # --- Validación de combinaciones permitidas ---
 case "${ORIG_EXT}:${DEST_EXT}" in
     chd:cue|chd:gdi|chd:iso)
-		CHDMAN_OP=extractcd
-		;;
-	cue:chd|gdi:chd|iso:chd)
-		CHDMAN_OP=createcd
-        ;;  # válido
+        CHDMAN_OP=extractcd
+        ;;
+    cue:chd|gdi:chd|iso:chd)
+        CHDMAN_OP=createdvd
+        ;;
     *)
         echo_error "Combinación no permitida: ${ORIG_EXT} → ${DEST_EXT}"
         echo_info "Combinaciones válidas:"

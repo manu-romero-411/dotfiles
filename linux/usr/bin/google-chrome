@@ -1,0 +1,4 @@
+#!/bin/bash
+
+flatpak run --branch=stable --arch=x86_64 --command=/app/bin/chrome --file-forwarding com.google.Chrome "${@}"
+exit $?

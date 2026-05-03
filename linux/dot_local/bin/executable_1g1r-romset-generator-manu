@@ -1,5 +1,7 @@
 #!/bin/bash
 
+EXEC="$HOME/.local/bin/1g1r-romset-generator"
+
 function help(){
 	echo "uso: $0 <directorio origen roms> <directorio destino romset> <dat de retool>"
 }
@@ -25,7 +27,7 @@ if ! mkdir -p "$2"; then
 	exit 1
 fi
 
-/home/manuel/.local/bin/1g1r-romset-generator \
+"$EXEC" \
 -r SPA,WOR,USA,EUR,JPN \
 -l es,en,fr,it,pt,jp \
 --move \

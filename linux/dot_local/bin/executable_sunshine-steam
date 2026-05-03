@@ -1,0 +1,27 @@
+#!/bin/bash
+set -e
+set -x
+
+# 1️⃣ Matar cualquier instancia previa de Steam
+if pgrep -ix "steam" > /dev/null; then
+    pkill -15 -f steam
+    sleep 2
+    pkill -9 -f steam || true
+fi
+
+# 2️⃣ Exportar variables de entorno correctas
+export XDG_RUNTIME_DIR="/run/user/$(id -u)"
+export DBUS_SESSION_BUS_ADDRESS="unix:path=$XDG_RUNTIME_DIR/bus"
+export DISPLAY=:0
+unset WAYLAND_DISPLAY   # Forzar X11
+
+# 3️⃣ Lanzar Steam en segundo plano si no está en memoria
+if ! pgrep -ix "steam" > /dev/null; then
+    /usr/bin/steam &   # Inicializa Steam en background
+    # Esperar a que Steam cree los sockets necesarios
+    echo "Esperando a que Steam inicialice..."
+    until pgrep -ix "steam" > /dev/null; do sleep 1; done
+    sleep 5  # Espera extra para que DBUS/WebSockets estén listos
+fi
+
+exec /usr/bin/steam -bigpicture
