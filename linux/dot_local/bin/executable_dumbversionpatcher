@@ -1,0 +1,9 @@
+#!/bin/bash
+
+APPDIR=/var/penguin/aplicaciones/dumbversionpatcher/
+
+cd "$APPDIR"
+echo "[INFO] Directorio de trabajo: $APPDIR"
+echo "[INFO] Si la aplicación te pregunta, pon los archivos origen y parche (dvp) ahí."
+echo ""
+exec "$APPDIR/DumbVersionPatcher-linux-x64" "${@}"

@@ -1,0 +1,98 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Nombre de la VM (primer argumento o pregunta)
+DOMAIN="${1:-}"
+if [[ -z "$DOMAIN" ]]; then
+    echo "VMs disponibles:"
+    virsh list --all --name --state-running | grep -v '^$' | nl -ba
+    read -rp "Nombre de la VM: " DOMAIN
+fi
+
+# Comprobar que la VM existe
+if ! virsh dominfo "$DOMAIN" &>/dev/null; then
+    echo "Error: la VM '$DOMAIN' no existe."
+    exit 1
+fi
+
+# Obtener dispositivos USB ya conectados a la VM
+echo ""
+echo "Recopilando dispositivos USB en uso por la VM..."
+ATTACHED_IDS=$(virsh dumpxml "$DOMAIN" 2>/dev/null \
+    | grep -E "vendor id|product id" \
+    | grep -oP '0x\K[0-9a-fA-F]+' \
+    | paste - - \
+    | awk '{print tolower($1) ":" tolower($2)}' || true)
+
+# Leer todos los dispositivos USB del sistema
+echo ""
+echo "Dispositivos USB disponibles (no conectados a la VM):"
+echo "───────────────────────────────────────────────────"
+
+declare -a USB_VENDORS USB_PRODUCTS USB_NAMES
+INDEX=0
+
+while IFS= read -r line; do
+    # Línea de bus/device
+    if [[ "$line" =~ ^Bus\ ([0-9]+)\ Device\ ([0-9]+):\ ID\ ([0-9a-fA-F]{4}):([0-9a-fA-F]{4})\ (.*) ]]; then
+        VID="${BASH_REMATCH[3]}"
+        PID="${BASH_REMATCH[4]}"
+        NAME="${BASH_REMATCH[5]}"
+        ID="${VID,,}:${PID,,}"
+
+        # Saltar hubs y raíces USB
+        if echo "$NAME" | grep -qiE "hub|root|linux foundation"; then
+            continue
+        fi
+
+        # Saltar los ya conectados a la VM
+        if echo "$ATTACHED_IDS" | grep -qi "^${ID}$"; then
+            continue
+        fi
+
+        INDEX=$((INDEX + 1))
+        USB_VENDORS[$INDEX]="$VID"
+        USB_PRODUCTS[$INDEX]="$PID"
+        USB_NAMES[$INDEX]="$NAME"
+
+        printf "  [%2d] %s:%s  %s\n" "$INDEX" "$VID" "$PID" "$NAME"
+    fi
+done < <(lsusb)
+
+echo "───────────────────────────────────────────────────"
+
+if [[ $INDEX -eq 0 ]]; then
+    echo "No hay dispositivos USB disponibles para conectar."
+    exit 0
+fi
+
+echo ""
+read -rp "Elige un número [1-$INDEX]: " CHOICE
+
+if ! [[ "$CHOICE" =~ ^[0-9]+$ ]] || [[ "$CHOICE" -lt 1 ]] || [[ "$CHOICE" -gt $INDEX ]]; then
+    echo "Selección inválida."
+    exit 1
+fi
+
+VID="${USB_VENDORS[$CHOICE]}"
+PID="${USB_PRODUCTS[$CHOICE]}"
+DEVNAME="${USB_NAMES[$CHOICE]}"
+
+echo ""
+echo "Conectando: $DEVNAME ($VID:$PID) → $DOMAIN"
+
+# XML temporal para el attach
+TMPXML=$(mktemp /tmp/usb-attach-XXXXXX.xml)
+cat > "$TMPXML" << EOF
+<hostdev mode='subsystem' type='usb' managed='yes'>
+  <source>
+    <vendor id='0x$VID'/>
+    <product id='0x$PID'/>
+  </source>
+</hostdev>
+EOF
+
+virsh attach-device "$DOMAIN" "$TMPXML" --current
+rm -f "$TMPXML"
+
+echo "✓ Dispositivo conectado correctamente."

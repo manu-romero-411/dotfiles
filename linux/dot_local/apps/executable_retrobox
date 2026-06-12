@@ -1,0 +1,6 @@
+#!/bin/bash
+
+RETROBOX_DIR=/var/penguin/juegos/retrobox
+
+${RETROBOX_DIR}/retrobox.sh "${@}"
+exit $?

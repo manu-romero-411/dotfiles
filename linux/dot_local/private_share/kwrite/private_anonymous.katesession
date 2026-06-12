@@ -1,0 +1,33 @@
+[Document 0]
+URL=file:///var/penguin/proyectos/dotfiles/linux/dot_gitconfig
+
+[MainWindow0 Settings]
+WindowState=10
+
+[Open Documents]
+Count=1
+
+[Open MainWindows]
+Count=1
+
+[Recent Files]
+File1[$e]=/run/media/manuel/Ventoy/ventoy/ventoy.json
+File10[$e]=/var/penguin/proyectos/dotfiles/linux/dot_gitconfig
+File2[$e]=/run/media/manuel/SYSTEMATUM/boot/grub/menu.lst
+File3[$e]=/run/media/manuel/SYSTEMATUM/menu.lst
+File4[$e]=$HOME/.bash_history
+File5[$e]=$HOME/Descargas/Telegram Desktop/hyperfluent/theme.txt
+File6[$e]=/run/media/manuel/Ventoy/ventoy/themes/hyperfluent-ventoy/theme.txt
+File7[$e]=$HOME/Escritorio/FNMT-renovacion-certificado-fedora.md
+File8[$e]=$HOME/Escritorio/antonio-chr/sof.conf
+File9[$e]=$HOME/.bashrc.d/02_java
+Name1[$e]=ventoy.json
+Name10[$e]=dot_gitconfig
+Name2[$e]=menu.lst
+Name3[$e]=menu.lst
+Name4[$e]=.bash_history
+Name5[$e]=theme.txt
+Name6[$e]=theme.txt
+Name7[$e]=FNMT-renovacion-certificado-fedora.md
+Name8[$e]=sof.conf
+Name9[$e]=02_java

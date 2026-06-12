@@ -1,4 +1,0 @@
-#!/bin/bash
-
-flatpak run --command=Telegram org.telegram.desktop "$@"
-exit $?

@@ -1,5 +1,5 @@
 [Background]
-Color=22,22,27
+Color=11,5,30
 
 [BackgroundFaint]
 Color=0,0,0
@@ -94,7 +94,7 @@ Blur=true
 ColorRandomization=false
 Description=Colores Linux
 FillStyle=Tile
-Opacity=0.8
+Opacity=0.9
 Wallpaper=
 WallpaperFlipType=NoFlip
 WallpaperOpacity=1

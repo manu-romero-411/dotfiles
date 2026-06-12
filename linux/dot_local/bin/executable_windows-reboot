@@ -1,6 +1,0 @@
-#!/bin/bash
-
-asusctl aura effect rainbow-cycle --speed high
-sudo grub2-reboot 0
-qdbus-qt6 org.kde.Shutdown /Shutdown logoutAndReboot
-

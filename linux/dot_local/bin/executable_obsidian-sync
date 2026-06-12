@@ -2,7 +2,7 @@
 
 set -uo pipefail
 
-MANUBLOGC="/home/manuel/Documentos/manuVault"
+MANUBLOGC="/var/penguin/documentos/manuVault"
 if [ ! -d "$MANUBLOGC" ]; then
 	echo "[ERROR] No existe el directorio $MANUBLOGC"
 	exit 1

@@ -1,3 +1,11 @@
 #!/bin/bash
 
-nohup setsid /home/manuel/.local/bin/vfio-start-vm-run "$1" > /dev/null 2>&1 &
+VM_NAME="$1"
+# si este grep da contenido, es que la versión nogpu de la vm está corriendo.
+# Abortar si es el caso
+if virsh list | grep -E 'running|ejecu' | awk '{print $2}' | grep "$VM_NAME"; then
+	echo "[ERROR] Máquina en ejecución (modo nogpu)"
+	exit 1
+fi
+
+nohup setsid /var/penguin/aplicaciones/vfio/vfio-start-vm-run "$VM_NAME" > /dev/null 2>&1 &

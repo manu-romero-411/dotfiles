@@ -4,3 +4,8 @@
 if [ -d "$HOME/.local/bin" ] ; then
     PATH="$HOME/.local/bin:$PATH"
 fi
+
+# set PATH so it includes app wrappers
+if [ -d "$HOME/.local/apps" ] ; then
+    PATH="$HOME/.local/apps:$PATH"
+fi

@@ -1,4 +1,0 @@
-#!/bin/bash
-
-#. $HOME/.local/lib/python3/bin/activate
-export PIP_USER=1
